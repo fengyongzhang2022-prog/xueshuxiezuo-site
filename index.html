@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="学术写作：中文论文引言语步诊断与反馈智能体，基于CARS扩展框架与中文期刊论文金标语料。"
+      content="AI赋能国际中文学术论文引言语步分析与应用阶段性成果，支持学习者上传论文原文，自动识别引言并生成结构诊断与修改建议。"
     />
-    <title>学术写作 | 中文论文引言语步诊断与反馈智能体</title>
+    <title>学术写作 | 论文引言智能诊断</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -20,187 +20,171 @@
         </span>
       </a>
       <nav class="nav" aria-label="主要导航">
-        <a href="#project">课题成果</a>
-        <a href="#agent">智能体</a>
-        <a href="#framework">框架</a>
-        <a href="#demo">在线诊断</a>
+        <a href="#project">项目说明</a>
+        <a href="#workflow">诊断流程</a>
+        <a href="#demo">上传诊断</a>
       </nav>
     </header>
 
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
-          <p class="project-name">AI Assistance for Move Analysis in Chinese Journal Article Introductions</p>
-          <h1>中文论文引言语步诊断与反馈智能体</h1>
-          <p class="hero-lead">
-            基于 CARS 扩展框架、中文期刊论文引言金标语料与大语言模型，
-            为学术论文引言提供语步识别、结构诊断和可解释修改建议。
+          <p class="project-label">
+            2025年江苏省研究生科研创新计划项目阶段性成果
           </p>
+          <h1>论文引言智能诊断与修改建议</h1>
+          <p class="hero-lead">
+            面向国际中文学术写作学习者，支持上传论文原文或粘贴全文，
+            自动识别引言部分，分析引言结构，并生成可操作的修改建议。
+          </p>
+          <div class="project-card">
+            <strong>AI赋能国际中文学术论文引言语步分析与应用</strong>
+            <span>项目编号：KYCX25_0067</span>
+          </div>
           <div class="hero-actions">
-            <a class="button primary" href="#demo">开始诊断</a>
-            <a class="button secondary" href="#framework">了解标注框架</a>
+            <a class="button primary" href="#demo">上传论文原文</a>
+            <a class="button secondary" href="#workflow">查看诊断流程</a>
           </div>
         </div>
-        <div class="diagnosis-panel" aria-label="智能体诊断示例">
+
+        <aside class="diagnosis-panel" aria-label="论文引言诊断流程示意">
           <div class="panel-header">
-            <span>Introduction Diagnosis</span>
-            <span class="status-dot">Ready</span>
+            <span>Manuscript Intake</span>
+            <span class="status-dot">DeepSeek API connected</span>
           </div>
-          <div class="sentence-card active">
-            <span class="tag m1">M1-IMP</span>
-            <p>说明研究对象的重要性、现实问题性或学术相关性。</p>
+          <div class="document-preview">
+            <div class="doc-line wide"></div>
+            <div class="doc-line"></div>
+            <div class="doc-block selected">
+              <span>自动定位：引言 / Introduction</span>
+              <p>从全文中识别研究背景、文献回顾、研究空白与研究目的。</p>
+            </div>
+            <div class="doc-line short"></div>
+            <div class="doc-line"></div>
           </div>
-          <div class="sentence-card">
-            <span class="tag m2">M2-GAP</span>
-            <p>指出已有研究、证据或知识状态中的不足与空白。</p>
+          <div class="signal-grid">
+            <div>
+              <strong>Word</strong>
+              <span>.docx</span>
+            </div>
+            <div>
+              <strong>PDF</strong>
+              <span>.pdf</span>
+            </div>
+            <div>
+              <strong>TXT</strong>
+              <span>.txt</span>
+            </div>
           </div>
-          <div class="sentence-card">
-            <span class="tag m3">M3-PUR</span>
-            <p>宣告本文的研究目的、研究问题或当前研究任务。</p>
-          </div>
-          <div class="score-grid">
-            <div><strong>100</strong><span>篇金标语料</span></div>
-            <div><strong>21</strong><span>细分标签</span></div>
-            <div><strong>5</strong><span>诊断维度</span></div>
-          </div>
-        </div>
+        </aside>
       </section>
 
       <section id="project" class="section project-section">
-        <div class="section-heading">
-          <h2>课题成果展示</h2>
-          <p>从标注框架、金标语料到智能体原型，形成面向学术中文引言写作的可解释辅助系统。</p>
+        <div class="section-heading split">
+          <h2>项目说明</h2>
+          <p>
+            本网站为 2025年江苏省研究生科研创新计划项目
+            “AI赋能国际中文学术论文引言语步分析与应用”
+            （项目编号：KYCX25_0067）的阶段性成果展示与应用入口。
+          </p>
         </div>
-        <div class="timeline">
+        <div class="evidence-strip">
+          <article>
+            <span>面向对象</span>
+            <strong>国际中文学术写作学习者</strong>
+            <p>帮助学习者发现引言中背景铺垫、研究空白、研究目的之间的结构问题。</p>
+          </article>
+          <article>
+            <span>核心任务</span>
+            <strong>从论文全文中识别引言</strong>
+            <p>学习者可以上传论文原文，系统先定位引言部分，再进行结构诊断。</p>
+          </article>
+          <article>
+            <span>输出结果</span>
+            <strong>引言结构与修改建议</strong>
+            <p>生成总体判断、句级功能分析、结构问题说明和具体改写建议。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="workflow" class="section workflow-section">
+        <div class="section-heading">
+          <h2>诊断流程</h2>
+          <p>系统不直接替学习者写论文，而是先识别问题，再给出有依据的修改方向。</p>
+        </div>
+        <div class="workflow">
           <article>
             <span>01</span>
-            <h3>CARS 扩展标注框架 v0.4</h3>
-            <p>在 Swales CARS 模型基础上，细化中文应用语言学实证论文引言中的功能标签与判定边界。</p>
+            <h3>上传论文原文</h3>
+            <p>支持粘贴文本，或上传 TXT、PDF、DOCX 文件。系统会抽取论文正文供后端分析。</p>
           </article>
           <article>
             <span>02</span>
-            <h3>中文期刊论文引言金标语料</h3>
-            <p>以自然句为最终单位，保留主标签、次标签、复合功能和人工复核信息，为智能体提供可靠依据。</p>
+            <h3>自动识别引言部分</h3>
+            <p>从全文中定位引言内容，避免学习者手动截取不完整或误把摘要放入诊断。</p>
           </article>
           <article>
             <span>03</span>
-            <h3>引言诊断与反馈智能体</h3>
-            <p>将语步识别升级为整篇引言诊断，输出结构问题、证据依据和可执行修改建议。</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="agent" class="section agent-section">
-        <div class="section-heading">
-          <h2>智能体能力</h2>
-          <p>面向教师评阅、学生自改和课题展示三类场景，强调可解释、可复核、可迭代。</p>
-        </div>
-        <div class="feature-grid">
-          <article>
-            <h3>句级语步识别</h3>
-            <p>识别自然句的主标签、次标签和完整标签，并解释判断依据。</p>
+            <h3>生成结构诊断</h3>
+            <p>判断引言是否充分建立研究背景、指出研究空白并清楚说明当前研究目的。</p>
           </article>
           <article>
-            <h3>篇章结构诊断</h3>
-            <p>检测 M1、M2、M3 的完整性、顺序、比例和衔接问题。</p>
-          </article>
-          <article>
-            <h3>写作修改建议</h3>
-            <p>针对背景堆积、空白缺失、目的突兀等问题给出可操作建议。</p>
-          </article>
-          <article>
-            <h3>专家复核机制</h3>
-            <p>对 M1-LIT、M1-IMP、M2-GAP 等边界复杂句标记人工复核。</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="framework" class="section framework-section">
-        <div class="section-heading">
-          <h2>CARS 扩展框架</h2>
-          <p>系统采用“建立研究领域、建立研究空间、占据研究空间”的三层语步结构。</p>
-        </div>
-        <div class="move-columns">
-          <article class="move-card m1-card">
-            <h3>M1 建立研究领域</h3>
-            <p>说明研究重要性、背景、文献、定义与理论框架。</p>
-            <ul>
-              <li>M1-IMP 重要性/问题性</li>
-              <li>M1-BG 背景/主题概括</li>
-              <li>M1-LIT 特定已有研究</li>
-              <li>M1-DEF 概念界定</li>
-            </ul>
-          </article>
-          <article class="move-card m2-card">
-            <h3>M2 建立研究空间</h3>
-            <p>指出研究空白、研究需要、争议、不足或延续验证。</p>
-            <ul>
-              <li>M2-GAP 研究空白</li>
-              <li>M2-NEED 研究必要性</li>
-              <li>M2-CON 争议/不一致</li>
-              <li>M2-QUE 问题提出</li>
-            </ul>
-          </article>
-          <article class="move-card m3-card">
-            <h3>M3 占据研究空间</h3>
-            <p>说明本文目的、问题、方法、材料、价值、创新和结构。</p>
-            <ul>
-              <li>M3-PUR 研究目的</li>
-              <li>M3-RQH 研究问题</li>
-              <li>M3-MET 研究方法</li>
-              <li>M3-VAL 研究价值</li>
-            </ul>
+            <span>04</span>
+            <h3>给出修改建议</h3>
+            <p>提供面向学习者的反馈，包括保留什么、补充什么、重排什么和如何改写。</p>
           </article>
         </div>
       </section>
 
       <section id="demo" class="section demo-section">
         <div class="demo-copy">
-          <h2>在线诊断</h2>
+          <h2>上传诊断</h2>
           <p>
-            粘贴论文引言，智能体会依据 CARS 扩展框架输出语步识别、结构诊断和修改建议。
-            当前版本适合课题展示、课堂试用和论文引言初稿自检。
+            上传论文原文或直接粘贴全文。若上传文件，系统会优先使用文件内容；
+            若暂时无法解析文件，也可以将原文复制到文本框中提交。
           </p>
-          <div class="demo-flow" aria-label="智能体处理流程">
-            <div>输入引言</div>
-            <div>语步识别</div>
-            <div>结构诊断</div>
-            <div>修改建议</div>
+          <div class="privacy-note">
+            提醒：请勿上传含有敏感个人信息或未授权公开的研究数据。
           </div>
         </div>
+
         <form class="agent-console" id="agentForm">
           <label>
             <span>论文题名</span>
-            <input id="paperTitle" name="title" type="text" placeholder="例如：汉语二语写作中引言语步结构研究" />
+            <input id="paperTitle" name="title" type="text" placeholder="例如：高级汉语学习者论文引言语步结构研究" />
           </label>
           <label>
             <span>学科方向</span>
-            <input id="discipline" name="discipline" type="text" placeholder="例如：应用语言学 / 国际中文教育" />
+            <input id="discipline" name="discipline" type="text" placeholder="例如：国际中文教育 / 应用语言学" />
+          </label>
+          <label class="wide upload-box" id="uploadBox">
+            <span>上传论文原文</span>
+            <input id="paperFile" name="paperFile" type="file" accept=".txt,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+            <small id="fileStatus">支持 TXT、PDF、DOCX。文件越清晰，识别越稳定。</small>
           </label>
           <label class="wide">
-            <span>引言文本</span>
+            <span>或粘贴论文全文 / 引言文本</span>
             <textarea
               id="introduction"
               name="introduction"
-              rows="9"
-              placeholder="请粘贴需要诊断的论文引言。建议一次输入 300 至 1200 字，便于获得更稳定的结构反馈。"
-              required
+              rows="10"
+              placeholder="请粘贴论文全文或引言部分。若粘贴全文，智能体会先识别引言，再给出结构诊断和修改建议。"
             ></textarea>
           </label>
           <div class="console-actions">
-            <button class="button primary" type="submit">生成智能回复</button>
+            <button class="button primary" type="submit">生成诊断报告</button>
             <button class="button secondary" type="button" id="sampleButton">填入示例</button>
           </div>
           <output class="agent-output" id="agentOutput">
-            <span>诊断结果会显示在这里。</span>
+            <span>诊断报告会显示在这里。</span>
           </output>
         </form>
       </section>
     </main>
 
     <footer class="footer">
-      <p>学术写作 · 中文论文引言语步诊断与反馈智能体</p>
-      <p>基于课题组 CARS 扩展标注框架与中文期刊论文引言金标语料构建</p>
+      <p>2025年江苏省研究生科研创新计划项目阶段性成果</p>
+      <p>AI赋能国际中文学术论文引言语步分析与应用 · KYCX25_0067</p>
     </footer>
     <script src="./app.js"></script>
   </body>

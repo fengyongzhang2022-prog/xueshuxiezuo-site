@@ -1,3 +1,6 @@
+import mammoth from "mammoth";
+import pdfParse from "pdf-parse/lib/pdf-parse.js";
+
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
@@ -9,22 +12,34 @@ export default async function handler(request, response) {
     return response.status(500).json({ error: "DeepSeek API key is not configured." });
   }
 
-  const { title = "", discipline = "", introduction = "" } = request.body || {};
-  const cleanIntroduction = String(introduction).trim();
+  const { title = "", discipline = "", manuscript = "", file = null } = request.body || {};
+  let manuscriptText = String(manuscript).trim();
 
-  if (!cleanIntroduction) {
-    return response.status(400).json({ error: "请提供需要诊断的引言文本。" });
+  if (file?.data) {
+    try {
+      const extracted = await extractFileText(file);
+      manuscriptText = [extracted, manuscriptText].filter(Boolean).join("\n\n");
+    } catch (error) {
+      return response.status(400).json({ error: error.message || "文件解析失败，请改为粘贴文本。" });
+    }
   }
 
-  if (cleanIntroduction.length > 6000) {
-    return response.status(400).json({ error: "文本过长，请先压缩到 6000 字以内。" });
+  const cleanManuscript = manuscriptText.trim();
+
+  if (!cleanManuscript) {
+    return response.status(400).json({ error: "请上传论文原文，或粘贴需要诊断的论文文本。" });
+  }
+
+  if (cleanManuscript.length > 18000) {
+    return response.status(400).json({ error: "文本过长，请保留题名、摘要、引言及相邻小节后再提交。" });
   }
 
   const systemPrompt = [
     "你是“学术中文引言语步诊断与反馈智能体”。",
-    "你的任务是依据 CARS 扩展标注框架 v0.4，对中文学术论文引言进行语步识别、结构诊断和修改建议生成。",
+    "你的任务是从中文学术论文全文或片段中先识别引言部分，再依据 CARS 扩展标注框架 v0.4 对引言进行语步识别、结构诊断和修改建议生成。",
     "核心标签包括 M1-IMP、M1-BG、M1-LIT、M1-DEF、M1-THE、M2-GAP、M2-NEED、M2-EXT、M2-QUE、M2-CON、M2-REP、M3-PUR、M3-RQH、M3-MET、M3-MAT、M3-SCO、M3-DES、M3-FIN、M3-VAL、M3-NOV、M3-STR、M3-PROD。",
     "判断原则：先判断交际功能，再用引用、报告动词、评价词等形式线索验证；括号引用不自动等于文献回顾；研究空白必须指向已有研究、证据、知识状态或学术问题；学习者困难或现实问题通常不自动归为 M2。",
+    "如果输入包含摘要、研究方法、文献综述、结论等非引言部分，请先排除非引言内容。",
     "输出中文，保持教师式、可操作、不过度替作者重写。"
   ].join("\n");
 
@@ -32,15 +47,16 @@ export default async function handler(request, response) {
     `论文题名：${title || "未提供"}`,
     `学科方向：${discipline || "未提供"}`,
     "",
-    "请诊断以下引言：",
-    cleanIntroduction,
+    "请先从以下论文原文或片段中识别引言部分，再诊断引言：",
+    cleanManuscript,
     "",
     "请按以下结构输出：",
-    "1. 总体判断：用 2 至 3 句话说明引言目前的主要优点和核心问题。",
-    "2. 语步识别表：按自然句列出句子摘要、主标签、可选次标签和判断理由。",
-    "3. 结构诊断：分别评价 M1、M2、M3 是否充分、顺序是否顺畅。",
-    "4. 修改建议：给出 3 至 5 条可执行建议。",
-    "5. 示例改写：只改写最需要修改的 1 至 2 句，并说明为什么这样改。"
+    "1. 引言识别：说明你识别出的引言范围；如果无法确定，请说明原因并使用最可能的引言段落。",
+    "2. 总体判断：用 2 至 3 句话说明引言目前的主要优点和核心问题。",
+    "3. 语步识别表：按自然句列出句子摘要、主标签、可选次标签和判断理由。",
+    "4. 结构诊断：评价背景铺垫、文献回顾、研究空白、研究目的之间是否充分、清楚、顺畅。",
+    "5. 修改建议：给出 3 至 5 条可执行建议。",
+    "6. 示例改写：只改写最需要修改的 1 至 2 句，并说明为什么这样改。"
   ].join("\n");
 
   try {
@@ -78,4 +94,29 @@ export default async function handler(request, response) {
   } catch (error) {
     return response.status(500).json({ error: error.message || "Unexpected server error." });
   }
+}
+
+async function extractFileText(file) {
+  const name = String(file.name || "").toLowerCase();
+  const buffer = Buffer.from(file.data, "base64");
+
+  if (!buffer.length) {
+    throw new Error("上传文件为空。");
+  }
+
+  if (name.endsWith(".txt") || file.type === "text/plain") {
+    return buffer.toString("utf8");
+  }
+
+  if (name.endsWith(".docx")) {
+    const result = await mammoth.extractRawText({ buffer });
+    return result.value;
+  }
+
+  if (name.endsWith(".pdf") || file.type === "application/pdf") {
+    const result = await pdfParse(buffer);
+    return result.text;
+  }
+
+  throw new Error("暂不支持该文件格式。请上传 TXT、PDF 或 DOCX，或直接粘贴文本。");
 }
