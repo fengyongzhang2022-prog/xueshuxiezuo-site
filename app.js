@@ -5,6 +5,8 @@ const fileInput = document.querySelector("#paperFile");
 const fileStatus = document.querySelector("#fileStatus");
 const sampleGrid = document.querySelector("#sampleGrid");
 const shuffleSamples = document.querySelector("#shuffleSamples");
+const sampleSelect = document.querySelector("#sampleSelect");
+const loadSelectedSample = document.querySelector("#loadSelectedSample");
 const ahaButton = document.querySelector("#ahaButton");
 const quickDemoNav = document.querySelector("#quickDemoNav");
 const aboutProject = document.querySelector("#aboutProject");
@@ -13,8 +15,10 @@ const diagnosisStatus = document.querySelector("#diagnosisStatus");
 const healthScore = document.querySelector("#healthScore");
 const healthBar = document.querySelector("#healthBar");
 const healthNote = document.querySelector("#healthNote");
-const highlightPreview = document.querySelector("#highlightPreview");
 const disciplineButtons = document.querySelectorAll(".discipline-tags button");
+const annotatedText = document.querySelector("#annotatedText");
+const annotatedBody = document.querySelector("#annotatedBody");
+const tabButtons = document.querySelectorAll(".report-tabs button");
 
 const samples = [
   {
@@ -58,10 +62,22 @@ sampleButton?.addEventListener("click", () => {
   applySample(samples[Math.floor(Math.random() * samples.length)]);
 });
 
-shuffleSamples?.addEventListener("click", renderSamples);
+shuffleSamples?.addEventListener("click", () => {
+  const sample = samples[Math.floor(Math.random() * samples.length)];
+  sampleSelect.value = sample.id;
+  applySample(sample);
+});
+loadSelectedSample?.addEventListener("click", () => {
+  const sample = samples.find((item) => item.id === sampleSelect.value);
+  if (sample) applySample(sample);
+});
 ahaButton?.addEventListener("click", runInstantDemo);
 quickDemoNav?.addEventListener("click", runInstantDemo);
 aboutProject?.addEventListener("click", () => projectDialog?.showModal());
+
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => activateTab(button.dataset.tab));
+});
 
 disciplineButtons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -96,7 +112,7 @@ form?.addEventListener("submit", async (event) => {
   }
 
   output.classList.add("loading");
-  output.innerHTML = "<span>正在读取论文并调用智能体诊断，请稍候...</span>";
+  output.innerHTML = makeLoadingPanels("正在读取论文并调用智能体诊断，请稍候...");
   setDashboard("loading");
 
   try {
@@ -120,11 +136,12 @@ form?.addEventListener("submit", async (event) => {
     }
 
     output.classList.remove("loading");
-    output.innerHTML = renderMarkdownLite(data.reply);
+    renderReport(data.reply);
+    renderAnnotatedText(payload.manuscript || document.querySelector("#introduction").value);
     setDashboard("success");
   } catch (error) {
     output.classList.remove("loading");
-    output.innerHTML = `<span>暂时无法生成回复：${escapeHtml(error.message)}</span>`;
+    output.innerHTML = makeSinglePanel(`暂时无法生成回复：${escapeHtml(error.message)}`);
     setDashboard("error");
   }
 });
@@ -146,47 +163,31 @@ function readFileAsBase64(file) {
 }
 
 function renderSamples() {
-  if (!sampleGrid) return;
-  const ordered = [...samples].sort(() => Math.random() - 0.5);
-  sampleGrid.innerHTML = ordered
-    .map(
-      (sample) => `
-        <button class="sample-card" type="button" data-sample="${sample.id}">
-          <span>${sample.label}</span>
-          <strong>${escapeHtml(sample.title)}</strong>
-          <small>${escapeHtml(sample.meta)}</small>
-          <em>${escapeHtml(sample.preview)}</em>
-        </button>
-      `
-    )
+  if (!sampleSelect) return;
+  sampleSelect.innerHTML = samples
+    .map((sample) => `<option value="${sample.id}">${sample.label}｜${escapeHtml(sample.title)}｜${escapeHtml(sample.meta)}</option>`)
     .join("");
-
-  sampleGrid.querySelectorAll(".sample-card").forEach((button) => {
-    button.addEventListener("click", () => {
-      const sample = samples.find((item) => item.id === button.dataset.sample);
-      if (sample) applySample(sample);
-    });
-  });
 }
 
 function applySample(sample) {
   document.querySelector("#paperTitle").value = sample.title;
   document.querySelector("#discipline").value = sample.discipline;
   document.querySelector("#introduction").value = sample.text;
-  updateHighlightPreview(sample);
+  if (sampleSelect) sampleSelect.value = sample.id;
+  renderAnnotatedText(sample.text);
   setDashboard("sample");
-  output.innerHTML = `<span>已填入${escapeHtml(sample.label)}，可以生成诊断报告。</span>`;
+  output.innerHTML = makeSinglePanel(`已填入${escapeHtml(sample.label)}，可以生成诊断报告。`);
 }
 
 function runInstantDemo() {
   const sample = samples[Math.floor(Math.random() * samples.length)];
   applySample(sample);
   output.classList.add("loading");
-  output.innerHTML = "<span>已载入样例。正在识别引言部分...</span>";
+  output.innerHTML = makeLoadingPanels("已载入样例。正在识别引言部分...");
   setDashboard("loading");
 
   setTimeout(() => {
-    output.innerHTML = "<span>已识别引言。正在检查背景铺垫、研究不足和研究目的...</span>";
+    output.innerHTML = makeLoadingPanels("已识别引言。正在检查背景铺垫、研究不足和研究目的...");
   }, 900);
 
   setTimeout(() => {
@@ -235,29 +236,103 @@ function setDashboard(state) {
   if (healthNote) healthNote.textContent = current.note;
 }
 
-function updateHighlightPreview(sample) {
-  if (!highlightPreview) return;
-  const snippets = {
-    "corpus-1": [
-      ["blue", "中国与韩国电动车市场现状"],
-      ["yellow", "比较目的需要进一步集中"],
-      ["green", "界定本文中的电动车范围"]
-    ],
-    "corpus-2": [
-      ["blue", "母语使用在二语写作中普遍存在"],
-      ["yellow", "专门针对越南留学生的研究较少"],
-      ["green", "调查母语使用策略并提出学习建议"]
-    ],
-    "corpus-3": [
-      ["blue", "性别角色和家庭价值观正在转型"],
-      ["yellow", "文献综述较长，问题聚焦需加强"],
-      ["green", "比较韩中母亲形象的转变与差异"]
-    ]
-  }[sample.id];
+function renderAnnotatedText(text) {
+  if (!annotatedText || !annotatedBody || !text?.trim()) return;
+  const paragraphs = text
+    .split(/\n+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 12);
 
-  highlightPreview.innerHTML = snippets
-    .map(([tone, text]) => `<span class="mark ${tone}">${escapeHtml(text)}</span>`)
+  annotatedBody.innerHTML = paragraphs
+    .map((paragraph, index) => {
+      const tone = classifyTone(paragraph, index);
+      return `<p class="annotated-line ${tone}" data-anchor="${index}">${escapeHtml(paragraph)}</p>`;
+    })
     .join("");
+  annotatedText.hidden = false;
+}
+
+function classifyTone(text, index) {
+  if (/不足|较少|缺乏|尚未|有限|然而|但是|问题/.test(text)) return "gap";
+  if (/本文|本研究|旨在|考察|探讨|分析|比较|调查/.test(text)) return "purpose";
+  if (/研究|认为|指出|显示|文献|综述|李|张|王|朴|金/.test(text) && index > 1) return "literature";
+  return "background";
+}
+
+function activateTab(tabName) {
+  tabButtons.forEach((button) => button.classList.toggle("active", button.dataset.tab === tabName));
+  output.querySelectorAll(".tab-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.panel === tabName);
+  });
+}
+
+function renderReport(reply) {
+  const sections = splitReport(reply);
+  output.innerHTML = `
+    <section class="tab-panel active" data-panel="structure">
+      ${renderStructurePanel(sections)}
+    </section>
+    <section class="tab-panel" data-panel="sentences">
+      ${renderSentenceCards(sections.sentences || sections.full)}
+    </section>
+    <section class="tab-panel" data-panel="guidance">
+      ${renderGuidancePanel(sections)}
+    </section>
+  `;
+  activateTab("structure");
+}
+
+function splitReport(reply) {
+  const parts = { full: reply };
+  const lines = reply.split(/\n/);
+  let current = "full";
+  const buckets = {};
+  lines.forEach((line) => {
+    if (/引言识别|总体判断|结构诊断/.test(line)) current = "structure";
+    if (/句级功能|逐句|句子摘要/.test(line)) current = "sentences";
+    if (/修改建议|示例改写|Before|After|改写/.test(line)) current = "guidance";
+    buckets[current] = `${buckets[current] || ""}\n${line}`;
+  });
+  return { ...parts, ...buckets };
+}
+
+function renderStructurePanel(sections) {
+  return `
+    <div class="structure-bars">
+      <div><span>背景铺垫</span><strong>80%</strong><i style="--w:80%"></i></div>
+      <div class="warn"><span>文献回顾</span><strong>40%</strong><i style="--w:40%"></i></div>
+      <div class="danger"><span>研究空白</span><strong>25%</strong><i style="--w:25%"></i></div>
+      <div><span>研究目的</span><strong>75%</strong><i style="--w:75%"></i></div>
+    </div>
+    ${renderMarkdownLite(sections.structure || sections.full)}
+  `;
+}
+
+function renderSentenceCards(text) {
+  const cleaned = text || "暂无逐句分析。";
+  const items = cleaned
+    .split(/\n+/)
+    .map((line) => line.replace(/^[-*\d.\s]+/, "").trim())
+    .filter((line) => line.length > 8)
+    .slice(0, 10);
+  return `<div class="sentence-cards">${items.map((item, index) => `<article><span>句 ${index + 1}</span><p>${escapeHtml(item)}</p></article>`).join("")}</div>`;
+}
+
+function renderGuidancePanel(sections) {
+  return renderMarkdownLite(sections.guidance || sections.full);
+}
+
+function makeSinglePanel(message) {
+  return `
+    <section class="tab-panel active" data-panel="structure"><span>${message}</span></section>
+    <section class="tab-panel" data-panel="sentences"></section>
+    <section class="tab-panel" data-panel="guidance"></section>
+  `;
+}
+
+function makeLoadingPanels(message) {
+  return makeSinglePanel(message);
 }
 
 function renderMarkdownLite(text) {
