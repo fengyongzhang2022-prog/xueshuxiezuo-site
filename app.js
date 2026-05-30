@@ -5,6 +5,16 @@ const fileInput = document.querySelector("#paperFile");
 const fileStatus = document.querySelector("#fileStatus");
 const sampleGrid = document.querySelector("#sampleGrid");
 const shuffleSamples = document.querySelector("#shuffleSamples");
+const ahaButton = document.querySelector("#ahaButton");
+const quickDemoNav = document.querySelector("#quickDemoNav");
+const aboutProject = document.querySelector("#aboutProject");
+const projectDialog = document.querySelector("#projectDialog");
+const diagnosisStatus = document.querySelector("#diagnosisStatus");
+const healthScore = document.querySelector("#healthScore");
+const healthBar = document.querySelector("#healthBar");
+const healthNote = document.querySelector("#healthNote");
+const highlightPreview = document.querySelector("#highlightPreview");
+const disciplineButtons = document.querySelectorAll(".discipline-tags button");
 
 const samples = [
   {
@@ -42,12 +52,22 @@ const samples = [
 const sampleText = samples[1].text;
 
 renderSamples();
+setDashboard("idle");
 
 sampleButton?.addEventListener("click", () => {
   applySample(samples[Math.floor(Math.random() * samples.length)]);
 });
 
 shuffleSamples?.addEventListener("click", renderSamples);
+ahaButton?.addEventListener("click", runInstantDemo);
+quickDemoNav?.addEventListener("click", runInstantDemo);
+aboutProject?.addEventListener("click", () => projectDialog?.showModal());
+
+disciplineButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelector("#discipline").value = button.textContent.trim();
+  });
+});
 
 fileInput?.addEventListener("change", () => {
   const file = fileInput.files?.[0];
@@ -77,6 +97,7 @@ form?.addEventListener("submit", async (event) => {
 
   output.classList.add("loading");
   output.innerHTML = "<span>正在读取论文并调用智能体诊断，请稍候...</span>";
+  setDashboard("loading");
 
   try {
     if (file) {
@@ -100,9 +121,11 @@ form?.addEventListener("submit", async (event) => {
 
     output.classList.remove("loading");
     output.innerHTML = renderMarkdownLite(data.reply);
+    setDashboard("success");
   } catch (error) {
     output.classList.remove("loading");
     output.innerHTML = `<span>暂时无法生成回复：${escapeHtml(error.message)}</span>`;
+    setDashboard("error");
   }
 });
 
@@ -150,7 +173,91 @@ function applySample(sample) {
   document.querySelector("#paperTitle").value = sample.title;
   document.querySelector("#discipline").value = sample.discipline;
   document.querySelector("#introduction").value = sample.text;
+  updateHighlightPreview(sample);
+  setDashboard("sample");
   output.innerHTML = `<span>已填入${escapeHtml(sample.label)}，可以生成诊断报告。</span>`;
+}
+
+function runInstantDemo() {
+  const sample = samples[Math.floor(Math.random() * samples.length)];
+  applySample(sample);
+  output.classList.add("loading");
+  output.innerHTML = "<span>已载入样例。正在识别引言部分...</span>";
+  setDashboard("loading");
+
+  setTimeout(() => {
+    output.innerHTML = "<span>已识别引言。正在检查背景铺垫、研究不足和研究目的...</span>";
+  }, 900);
+
+  setTimeout(() => {
+    form?.requestSubmit();
+  }, 1600);
+}
+
+function setDashboard(state) {
+  const states = {
+    idle: {
+      status: "等待输入",
+      score: "--",
+      width: "0%",
+      note: "上传或粘贴论文后，系统会判断引言是否完成背景、文献、研究空白和研究目的的组织。"
+    },
+    sample: {
+      status: "样例已载入",
+      score: "预览",
+      width: "28%",
+      note: "你可以直接生成诊断报告，观察系统如何定位引言并提出修改建议。"
+    },
+    loading: {
+      status: "诊断中",
+      score: "...",
+      width: "62%",
+      note: "正在识别引言范围，并检查背景铺垫、文献回顾、研究不足和研究目的。"
+    },
+    success: {
+      status: "诊断完成",
+      score: "75%",
+      width: "75%",
+      note: "已生成诊断报告。分数是辅助提示，重点请看右侧反馈中的具体问题和修改建议。"
+    },
+    error: {
+      status: "需要重试",
+      score: "--",
+      width: "12%",
+      note: "诊断未完成。请检查文本长度、文件格式或稍后重试。"
+    }
+  };
+
+  const current = states[state] || states.idle;
+  if (diagnosisStatus) diagnosisStatus.textContent = current.status;
+  if (healthScore) healthScore.textContent = current.score;
+  if (healthBar) healthBar.style.width = current.width;
+  if (healthNote) healthNote.textContent = current.note;
+}
+
+function updateHighlightPreview(sample) {
+  if (!highlightPreview) return;
+  const snippets = {
+    "corpus-1": [
+      ["blue", "中国与韩国电动车市场现状"],
+      ["yellow", "比较目的需要进一步集中"],
+      ["green", "界定本文中的电动车范围"]
+    ],
+    "corpus-2": [
+      ["blue", "母语使用在二语写作中普遍存在"],
+      ["yellow", "专门针对越南留学生的研究较少"],
+      ["green", "调查母语使用策略并提出学习建议"]
+    ],
+    "corpus-3": [
+      ["blue", "性别角色和家庭价值观正在转型"],
+      ["yellow", "文献综述较长，问题聚焦需加强"],
+      ["green", "比较韩中母亲形象的转变与差异"]
+    ]
+  }[sample.id];
+
+  highlightPreview.innerHTML = snippets
+    .map(([tone, text]) => `<span class="mark ${tone}">${escapeHtml(text)}</span>`)
+    .join("");
 }
 
 function renderMarkdownLite(text) {
