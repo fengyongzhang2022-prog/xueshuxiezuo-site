@@ -174,9 +174,9 @@ h1 {
   max-width: 820px;
   margin-bottom: 16px;
   color: var(--ink);
-  font-size: clamp(40px, 5.2vw, 74px);
+  font-size: clamp(34px, 4.1vw, 56px);
   font-weight: 900;
-  line-height: 1.06;
+  line-height: 1.14;
   text-wrap: balance;
 }
 
@@ -810,7 +810,7 @@ textarea:focus {
   }
 
   h1 {
-    font-size: 38px;
+    font-size: 32px;
   }
 
   .footer {
