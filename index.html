@@ -23,7 +23,7 @@
         <a href="#project">课题成果</a>
         <a href="#agent">智能体</a>
         <a href="#framework">框架</a>
-        <a href="#demo">演示</a>
+        <a href="#demo">在线诊断</a>
       </nav>
     </header>
 
@@ -37,7 +37,7 @@
             为学术论文引言提供语步识别、结构诊断和可解释修改建议。
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#demo">查看演示流程</a>
+            <a class="button primary" href="#demo">开始诊断</a>
             <a class="button secondary" href="#framework">了解标注框架</a>
           </div>
         </div>
@@ -156,19 +156,45 @@
 
       <section id="demo" class="section demo-section">
         <div class="demo-copy">
-          <h2>演示流程</h2>
+          <h2>在线诊断</h2>
           <p>
-            输入论文题名、学科方向和引言文本后，智能体先切分自然句，再完成语步识别、
-            整体结构诊断和修改反馈。正式演示版可连接 ModelScope 或 API 服务。
+            粘贴论文引言，智能体会依据 CARS 扩展框架输出语步识别、结构诊断和修改建议。
+            当前版本适合课题展示、课堂试用和论文引言初稿自检。
           </p>
+          <div class="demo-flow" aria-label="智能体处理流程">
+            <div>输入引言</div>
+            <div>语步识别</div>
+            <div>结构诊断</div>
+            <div>修改建议</div>
+          </div>
         </div>
-        <div class="demo-flow">
-          <div>输入引言</div>
-          <div>自然句切分</div>
-          <div>语步识别</div>
-          <div>结构诊断</div>
-          <div>修改建议</div>
-        </div>
+        <form class="agent-console" id="agentForm">
+          <label>
+            <span>论文题名</span>
+            <input id="paperTitle" name="title" type="text" placeholder="例如：汉语二语写作中引言语步结构研究" />
+          </label>
+          <label>
+            <span>学科方向</span>
+            <input id="discipline" name="discipline" type="text" placeholder="例如：应用语言学 / 国际中文教育" />
+          </label>
+          <label class="wide">
+            <span>引言文本</span>
+            <textarea
+              id="introduction"
+              name="introduction"
+              rows="9"
+              placeholder="请粘贴需要诊断的论文引言。建议一次输入 300 至 1200 字，便于获得更稳定的结构反馈。"
+              required
+            ></textarea>
+          </label>
+          <div class="console-actions">
+            <button class="button primary" type="submit">生成智能回复</button>
+            <button class="button secondary" type="button" id="sampleButton">填入示例</button>
+          </div>
+          <output class="agent-output" id="agentOutput">
+            <span>诊断结果会显示在这里。</span>
+          </output>
+        </form>
       </section>
     </main>
 
@@ -176,5 +202,6 @@
       <p>学术写作 · 中文论文引言语步诊断与反馈智能体</p>
       <p>基于课题组 CARS 扩展标注框架与中文期刊论文引言金标语料构建</p>
     </footer>
+    <script src="./app.js"></script>
   </body>
 </html>
