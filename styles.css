@@ -447,6 +447,90 @@ h1 {
   line-height: 1.6;
 }
 
+.sample-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: #f6fbff;
+  border: 1px solid var(--line);
+}
+
+.sample-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sample-panel-head span {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.sample-panel-head button {
+  padding: 0;
+  color: var(--accent);
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sample-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.sample-card {
+  display: grid;
+  gap: 6px;
+  min-height: 148px;
+  padding: 13px;
+  text-align: left;
+  background: #ffffff;
+  border: 1px solid #c9dced;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.sample-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 14px 32px rgba(22, 56, 91, 0.1);
+}
+
+.sample-card span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sample-card strong {
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.sample-card small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.sample-card em {
+  color: #4d6177;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.5;
+}
+
 .agent-console input,
 .agent-console textarea {
   width: 100%;
@@ -595,6 +679,10 @@ h1 {
   }
 
   .agent-console {
+    grid-template-columns: 1fr;
+  }
+
+  .sample-grid {
     grid-template-columns: 1fr;
   }
 }

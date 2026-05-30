@@ -65,6 +65,13 @@
             <input id="paperFile" name="paperFile" type="file" accept=".txt,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
             <small id="fileStatus">支持 Word、PDF、TXT。也可以直接粘贴文本。</small>
           </label>
+          <section class="sample-panel wide" aria-label="样例语料">
+            <div class="sample-panel-head">
+              <span>样例语料</span>
+              <button type="button" id="shuffleSamples">换一组顺序</button>
+            </div>
+            <div class="sample-grid" id="sampleGrid"></div>
+          </section>
           <label class="wide">
             <span>粘贴论文全文 / 引言文本</span>
             <textarea
