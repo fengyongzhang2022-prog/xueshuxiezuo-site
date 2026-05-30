@@ -22,12 +22,12 @@
       <nav class="nav" aria-label="主要导航">
         <a href="#project">项目说明</a>
         <a href="#workflow">诊断流程</a>
-        <a href="#demo">上传诊断</a>
+        <a href="#upload">上传诊断</a>
       </nav>
     </header>
 
     <main id="top">
-      <section class="hero">
+      <section class="hero" id="upload">
         <div class="hero-copy">
           <p class="project-label">
             2025年江苏省研究生科研创新计划项目阶段性成果
@@ -42,46 +42,46 @@
             <span>项目编号：KYCX25_0067</span>
           </div>
           <div class="hero-actions">
-            <a class="button primary" href="#demo">上传论文原文</a>
+            <a class="button primary" href="#uploadForm">上传论文原文</a>
             <a class="button secondary" href="#workflow">查看诊断流程</a>
           </div>
         </div>
 
-        <aside class="diagnosis-panel" aria-label="论文引言诊断报告预览">
-          <div class="panel-header">
-            <span>诊断报告预览</span>
-            <span class="status-dot">API 已接入</span>
+        <form class="agent-console hero-console" id="agentForm">
+          <div class="console-title">
+            <h2>上传论文原文</h2>
+            <p>系统会先识别引言部分，再给出结构诊断和修改建议。</p>
           </div>
-          <div class="report-preview">
-            <div class="report-row focus">
-              <span>引言范围</span>
-              <strong>已从全文中定位“引言”部分</strong>
-              <p>排除摘要、研究方法与结论段落，保留与引言结构相关的自然句。</p>
-            </div>
-            <div class="report-row">
-              <span>结构诊断</span>
-              <strong>M1 充分，M2 偏弱，M3 目的明确</strong>
-            </div>
-            <div class="report-row">
-              <span>修改建议</span>
-              <strong>补充前人研究不足，压缩背景铺垫</strong>
-            </div>
+          <label>
+            <span>论文题名</span>
+            <input id="paperTitle" name="title" type="text" placeholder="例如：高级汉语学习者论文引言语步结构研究" />
+          </label>
+          <label>
+            <span>学科方向</span>
+            <input id="discipline" name="discipline" type="text" placeholder="例如：国际中文教育 / 应用语言学" />
+          </label>
+          <label class="wide upload-box" id="uploadBox">
+            <span>上传文件</span>
+            <input id="paperFile" name="paperFile" type="file" accept=".txt,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+            <small id="fileStatus">支持 Word、PDF、TXT。也可以直接粘贴文本。</small>
+          </label>
+          <label class="wide">
+            <span>粘贴论文全文 / 引言文本</span>
+            <textarea
+              id="introduction"
+              name="introduction"
+              rows="7"
+              placeholder="请粘贴论文全文或引言部分。若粘贴全文，智能体会先识别引言，再诊断结构。"
+            ></textarea>
+          </label>
+          <div class="console-actions">
+            <button class="button primary" type="submit">生成诊断报告</button>
+            <button class="button secondary" type="button" id="sampleButton">填入示例</button>
           </div>
-          <div class="signal-grid">
-            <div>
-              <strong>Word</strong>
-              <span>.docx</span>
-            </div>
-            <div>
-              <strong>PDF</strong>
-              <span>.pdf</span>
-            </div>
-            <div>
-              <strong>TXT</strong>
-              <span>.txt</span>
-            </div>
-          </div>
-        </aside>
+          <output class="agent-output" id="agentOutput">
+            <span>诊断报告会显示在这里。</span>
+          </output>
+        </form>
       </section>
 
       <section id="project" class="section project-section">
@@ -151,49 +151,9 @@
         </div>
       </section>
 
-      <section id="demo" class="section demo-section">
-        <div class="demo-copy">
-          <h2>上传诊断</h2>
-          <p>
-            上传论文原文或直接粘贴全文。若上传文件，系统会优先使用文件内容；
-            若暂时无法解析文件，也可以将原文复制到文本框中提交。
-          </p>
-          <div class="privacy-note">
-            提醒：请勿上传含有敏感个人信息或未授权公开的研究数据。
-          </div>
-        </div>
-
-        <form class="agent-console" id="agentForm">
-          <label>
-            <span>论文题名</span>
-            <input id="paperTitle" name="title" type="text" placeholder="例如：高级汉语学习者论文引言语步结构研究" />
-          </label>
-          <label>
-            <span>学科方向</span>
-            <input id="discipline" name="discipline" type="text" placeholder="例如：国际中文教育 / 应用语言学" />
-          </label>
-          <label class="wide upload-box" id="uploadBox">
-            <span>上传论文原文</span>
-            <input id="paperFile" name="paperFile" type="file" accept=".txt,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-            <small id="fileStatus">支持 TXT、PDF、DOCX。文件越清晰，识别越稳定。</small>
-          </label>
-          <label class="wide">
-            <span>或粘贴论文全文 / 引言文本</span>
-            <textarea
-              id="introduction"
-              name="introduction"
-              rows="10"
-              placeholder="请粘贴论文全文或引言部分。若粘贴全文，智能体会先识别引言，再给出结构诊断和修改建议。"
-            ></textarea>
-          </label>
-          <div class="console-actions">
-            <button class="button primary" type="submit">生成诊断报告</button>
-            <button class="button secondary" type="button" id="sampleButton">填入示例</button>
-          </div>
-          <output class="agent-output" id="agentOutput">
-            <span>诊断报告会显示在这里。</span>
-          </output>
-        </form>
+      <section class="section note-section">
+        <h2>使用说明</h2>
+        <p>请勿上传含有敏感个人信息、未授权公开的研究数据或他人未公开论文。诊断结果用于写作修改参考，最终文本仍需作者自行判断。</p>
       </section>
     </main>
 
