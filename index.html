@@ -47,20 +47,25 @@
           </div>
         </div>
 
-        <aside class="diagnosis-panel" aria-label="论文引言诊断流程示意">
+        <aside class="diagnosis-panel" aria-label="论文引言诊断报告预览">
           <div class="panel-header">
-            <span>Manuscript Intake</span>
-            <span class="status-dot">DeepSeek API connected</span>
+            <span>诊断报告预览</span>
+            <span class="status-dot">API 已接入</span>
           </div>
-          <div class="document-preview">
-            <div class="doc-line wide"></div>
-            <div class="doc-line"></div>
-            <div class="doc-block selected">
-              <span>自动定位：引言 / Introduction</span>
-              <p>从全文中识别研究背景、文献回顾、研究空白与研究目的。</p>
+          <div class="report-preview">
+            <div class="report-row focus">
+              <span>引言范围</span>
+              <strong>已从全文中定位“引言”部分</strong>
+              <p>排除摘要、研究方法与结论段落，保留与引言结构相关的自然句。</p>
             </div>
-            <div class="doc-line short"></div>
-            <div class="doc-line"></div>
+            <div class="report-row">
+              <span>结构诊断</span>
+              <strong>M1 充分，M2 偏弱，M3 目的明确</strong>
+            </div>
+            <div class="report-row">
+              <span>修改建议</span>
+              <strong>补充前人研究不足，压缩背景铺垫</strong>
+            </div>
           </div>
           <div class="signal-grid">
             <div>
@@ -88,7 +93,16 @@
             （项目编号：KYCX25_0067）的阶段性成果展示与应用入口。
           </p>
         </div>
-        <div class="evidence-strip">
+        <div class="project-layout">
+          <article class="project-summary">
+            <h3>平台定位</h3>
+            <p>
+              本平台面向国际中文学术写作教学与学习者自我修改场景，
+              重点处理“论文引言如何写清楚”的问题：系统读取论文原文，
+              识别引言部分，分析其结构完整性，并给出修改方向。
+            </p>
+          </article>
+          <div class="evidence-strip">
           <article>
             <span>面向对象</span>
             <strong>国际中文学术写作学习者</strong>
@@ -104,6 +118,7 @@
             <strong>引言结构与修改建议</strong>
             <p>生成总体判断、句级功能分析、结构问题说明和具体改写建议。</p>
           </article>
+          </div>
         </div>
       </section>
 
